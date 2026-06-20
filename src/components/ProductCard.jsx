@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 export default function ProductCard({ product }) {
@@ -37,16 +38,21 @@ export default function ProductCard({ product }) {
         </svg>
       </button>
 
-      {/* Image Container */}
-      <div className="product-image-container">
-        <img src={product.image} alt={product.title} className="product-image" loading="lazy" />
-      </div>
+      {/* Image Container wrapped in Link */}
+      <Link to={`/product/${product.id}`} className="product-image-link-wrapper">
+        <div className="product-image-container">
+          <img src={product.image} alt={product.title} className="product-image" loading="lazy" />
+        </div>
+      </Link>
 
       {/* Details */}
       <div className="product-details">
         <h3 className="product-title" title={product.title}>
-          {displayTitle}
+          <Link to={`/product/${product.id}`} className="product-title-link">
+            {displayTitle}
+          </Link>
         </h3>
+        
         <p className="product-price">
           From <span className="price-val">${product.price.toFixed(2)}</span>
         </p>

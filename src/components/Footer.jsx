@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 export default function Footer() {
@@ -24,10 +25,11 @@ export default function Footer() {
         <div className="footer-col">
           <h4 className="footer-col-title">Help Center</h4>
           <ul className="footer-links">
-            <li><a href="#faq">FAQ</a></li>
-            <li><a href="#about">About E-Commerce</a></li>
-            <li><a href="#tickets">Support Tickets</a></li>
-            <li><a href="#contact">Contact Us</a></li>
+            <li><Link to="/info/faq">FAQ</Link></li>
+            <li><Link to="/info/about">About E-Commerce</Link></li>
+            <li><Link to="/info/tickets">Support Tickets</Link></li>
+            <li><Link to="/info/contact">Contact Us</Link></li>
+            <li><Link to="/admin">Merchant Ops Dashboard</Link></li>
           </ul>
         </div>
 
@@ -35,10 +37,10 @@ export default function Footer() {
         <div className="footer-col">
           <h4 className="footer-col-title">Quick Links</h4>
           <ul className="footer-links">
-            <li><a href="#supplier">Become A Supplier</a></li>
-            <li><a href="#track">Track Order</a></li>
-            <li><a href="#services">Services & Membership</a></li>
-            <li><a href="#community">Help & Community</a></li>
+            <li><Link to="/info/supplier">Become A Supplier</Link></li>
+            <li><Link to="/info/track">Track Order</Link></li>
+            <li><Link to="/info/services">Services & Membership</Link></li>
+            <li><Link to="/info/community">Help & Community</Link></li>
           </ul>
         </div>
 
@@ -46,8 +48,8 @@ export default function Footer() {
         <div className="footer-col">
           <h4 className="footer-col-title">Buy On E-Commerce</h4>
           <ul className="footer-links">
-            <li><a href="#terms">Terms & Conditions</a></li>
-            <li><a href="#privacy">Privacy & Rules</a></li>
+            <li><Link to="/info/terms">Terms & Conditions</Link></li>
+            <li><Link to="/info/privacy">Privacy & Rules</Link></li>
           </ul>
         </div>
 

@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import UserDropdown from './UserDropdown';
 import logo from '../assets/logo.png';
 
 export default function Header() {
@@ -10,28 +12,42 @@ export default function Header() {
     wishlist,
     setIsCartOpen,
     setIsWishlistOpen,
+    user,
   } = useApp();
 
   const [localSearch, setLocalSearch] = useState(searchQuery);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Debounce search query changes
   useEffect(() => {
     const handler = setTimeout(() => {
       setSearchQuery(localSearch);
+      // Redirect to home if user searches while on another page
+      if (localSearch.trim() !== '' && location.pathname !== '/') {
+        navigate('/');
+      }
     }, 300);
 
     return () => clearTimeout(handler);
-  }, [localSearch, setSearchQuery]);
+  }, [localSearch, setSearchQuery, location.pathname, navigate]);
+
+  // Sync header search query if reset externally
+  useEffect(() => {
+    setLocalSearch(searchQuery);
+  }, [searchQuery]);
 
   const wishlistCount = wishlist.length;
 
   return (
     <header className="header-container">
       <div className="header-content">
+        
         {/* Logo */}
-        <div className="logo-section">
+        <Link to="/" className="logo-section" aria-label="Go to Homepage">
           <img src={logo} alt="e-commerce logo" className="header-logo" />
-        </div>
+        </Link>
 
         {/* Search Bar */}
         <div className="search-section">
@@ -63,24 +79,45 @@ export default function Header() {
 
         {/* Header Icons & Actions */}
         <div className="header-actions">
-          {/* User Profile */}
-          <div className="user-profile">
-            <span className="user-avatar-icon">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-            </span>
-            <span className="user-name">Tim ▼</span>
+          
+          {/* User Profile Action Trigger */}
+          <div className="user-profile-wrapper">
+            <div 
+              className={`user-profile ${isDropdownOpen ? 'active' : ''}`}
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              role="button"
+              aria-haspopup="true"
+              aria-expanded={isDropdownOpen}
+            >
+              {user ? (
+                <>
+                  <img src={user.avatar} alt={user.name} className="header-user-avatar" />
+                  <span className="user-name">{user.name} ▼</span>
+                </>
+              ) : (
+                <>
+                  <span className="user-avatar-icon">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </span>
+                  <span className="user-name">Sign In ▼</span>
+                </>
+              )}
+            </div>
+            
+            {/* Dynamic Mega Dropdown Panel */}
+            <UserDropdown isOpen={isDropdownOpen} onClose={() => setIsDropdownOpen(false)} />
           </div>
 
           {/* Wishlist Button */}
@@ -103,7 +140,7 @@ export default function Header() {
                 <span className="badge-count wishlist-badge">{wishlistCount}</span>
               )}
             </div>
-            <span className="action-label">Wishlist</span>
+            <span className="action-label hide-mobile">Wishlist</span>
           </button>
 
           {/* Cart Button */}
@@ -132,8 +169,9 @@ export default function Header() {
                 <span className="badge-count cart-badge">{cartCount}</span>
               )}
             </div>
-            <span className="action-label">Cart</span>
+            <span className="action-label hide-mobile">Cart</span>
           </button>
+
         </div>
       </div>
     </header>
